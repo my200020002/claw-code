@@ -132,7 +132,9 @@ cargo run -p rusty-claude-cli -- --resume session.json /memory /config
 - `bootstrap-plan` — print the current bootstrap skeleton
 - `system-prompt [--cwd PATH] [--date YYYY-MM-DD]` — render the synthesized system prompt
 - `--help` / `-h` — show CLI help
-- `--version` / `-V` — print the CLI version
+- `--version` / `-V` — print the CLI version and build info locally (no API call)
+- `--output-format text|json` — choose non-interactive prompt output rendering
+- `--allowedTools <tool[,tool...]>` — restrict enabled tools for interactive sessions and prompt-mode tool use
 
 ### Interactive slash commands
 
