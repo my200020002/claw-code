@@ -16,6 +16,7 @@ jobs:
           - os: windows-latest
             target: x86_64-pc-windows-msvc
             output: claw-code-windows-x64
+            binary_name: claw-cli
             ext: .exe
     steps:
       - name: Checkout
@@ -28,11 +29,22 @@ jobs:
 
       - name: Build Release
         working-directory: ./rust
-        run: cargo build --release --target ${{ matrix.target }}
-
+        run: cargo build --release --target ${{ matrix.target }} --verbose
+        
+      - name: Verify Binary Exists
+        working-directory: ./rust
+        run: |
+          $binaryPath = "target/${{ matrix.target }}/release/${{ matrix.binary_name }}${{ matrix.ext }}"
+          if (-not (Test-Path $binaryPath)) {
+            Write-Error "Binary not found at $binaryPath"
+            exit 1
+          }
+          Write-Host "Binary verified at $binaryPath"
+        shell: pwsh
       - name: Upload Binary
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.output }}${{ matrix.ext }}
           path: |
-            rust/target/${{ matrix.target }}/release/claw-cli${{ matrix.ext }}
+            rust/target/${{ matrix.target }}/release/${{ matrix.binary_name }}${{ matrix.ext }}
+          if-no-files-found: error
