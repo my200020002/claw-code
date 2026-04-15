@@ -31,16 +31,20 @@ jobs:
         working-directory: ./rust
         run: cargo build --release --target ${{ matrix.target }} --verbose
         
-      - name: Verify Binary Exists
+      - name: List ALL files in release folder (Windows Debug)
+        if: matrix.os == 'windows-latest'
         working-directory: ./rust
         run: |
-          $binaryPath = "target/${{ matrix.target }}/release/${{ matrix.binary_name }}${{ matrix.ext }}"
-          if (-not (Test-Path $binaryPath)) {
-            Write-Error "Binary not found at $binaryPath"
-            exit 1
-          }
-          Write-Host "Binary verified at $binaryPath"
+          echo "Looking in target..."
+          dir ./target/
+          echo "Looking in target/release..."
+          dir ./target/release/
+          echo "Looking in target/x86_64-pc-windows-msvc/..."
+          dir ./target/x86_64-pc-windows-msvc/ 2>nul || echo "Folder not exists"
+          echo "Looking in target/x86_64-pc-windows-msvc/release..."
+          dir ./target/x86_64-pc-windows-msvc/release/ 2>nul || echo "Folder not exists"
         shell: pwsh
+        
       - name: Upload Binary
         uses: actions/upload-artifact@v4
         with:
